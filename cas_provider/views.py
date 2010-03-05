@@ -14,13 +14,15 @@ import urlparse, urllib
 __all__ = ['login', 'validate', 'service_validate', 'logout']
 
 def _add_query_param(url, param, value):
+    print "ADDING PARAM: ", param, value, "TO", url
     parsed = urlparse.urlparse(url)
     query = urlparse.parse_qs(parsed.query)
-    query[param] = [unicode(value)]
-    query = [ ((k, v) if len(v) > 1 else (k, v[0])) for k, v in query.iteritems() ]
+    query[param] = [unicode(value, 'utf-8')]
+    query = [ ((k, v) if len(v) != 1 else (k, v[0])) for k, v in query.iteritems() ]
     parsed = urlparse.ParseResult(parsed.scheme, parsed.netloc,
                                   parsed.path, parsed.params,
                                   urllib.urlencode(query), parsed.fragment)
+    print "RESULT: ", parsed
     return parsed.geturl()
 
 
